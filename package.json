@@ -1,6 +1,6 @@
 {
   "name": "@fasti18n/client-js",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A js module that interacts with the fastI18n service",
   "repository": {
     "type": "git",
@@ -26,9 +26,12 @@
   "files": [
     "dist"
   ],
+  "bin": {
+    "fasti18n": "dist/bin/fasti18n-cli.js"
+  },
   "scripts": {
     "dev": "rollup -c -w",
-    "build": "rm -rf ./dist && rollup -c",
+    "build": "rm -rf ./dist && rollup -c && chmod +x ./dist/bin/*",
     "build:types": "rm -rf ./build && tsc -p ./tsconfig.json --outDir build --declaration true && api-extractor run",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

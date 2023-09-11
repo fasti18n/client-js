@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { exit } from 'process';
 import minimist, { ParsedArgs } from 'minimist';
 import fs from 'fs/promises';

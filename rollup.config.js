@@ -49,7 +49,8 @@ export default [
             {
                 file: pkg['main-cli'],
                 format: "module",
-                external: ['process', 'minimist']
+                external: ['process', 'minimist'],
+                banner: '#!/usr/bin/env node'
             },
         ],
         plugins: [typescript({ tsconfig: "./tsconfig.json" })],
