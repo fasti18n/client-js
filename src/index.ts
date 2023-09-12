@@ -3,7 +3,7 @@ try {
     local_builded_translations = require('@/../.fasti18n.translations.json');
 } catch (e) {
     local_builded_translations = undefined;
-};
+}
 
 type TranslationsConfigurationResponse =
     | (Omit<Response, "json"> & {
@@ -52,7 +52,7 @@ export class FastI18nService {
 
 
     public constructor(configuration: FastI18nConfiguration) {
-        for (let key in configuration) {
+        for (const key in configuration) {
             if (Object.keys(this).includes(key)) this[key] = configuration[key];
         }
         return this.start();
