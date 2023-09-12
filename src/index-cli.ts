@@ -27,32 +27,27 @@ if (!argv?.project) {
 
 const project = argv['project'];
 
-const updateLocalTranslationBuild = async () => {
-    const fastI18n = await new FastI18nService({
+export const updateLocalTranslationBuild = async (project: string) => {
+    const fastI18n = await FastI18nService.create({
         api_key: undefined,
         project_id: project,
         startup_policy: 'ONLINE',
         update_ttl: 5 * 60,
-    }).catch((e: any) => {
-        console.log('Error');
-        console.error(e);
-        exit(1);
-    })
+    });
+
+    console.log(fastI18n);
 
     const cached_configuration = fastI18n.getCachedConfiguration();
 
     if (!cached_configuration) {
-        console.error('Unable to retrieve the latest online configuration');
-        exit(1);
+        throw new Error('Unable to retrieve the latest online configuration');
     }
 
-    await fs.writeFile('.fasti18n.translations.json', JSON.stringify(cached_configuration)).catch((e: any) => {
-        console.error('Unable to write the latest online configuration');
-        console.error(e);
-        exit(1);
+    await fs.writeFile('.fasti18n.translations.json', JSON.stringify(cached_configuration)).catch(() => {
+        throw new Error('Unable to write the latest online configuration');
     });
 
     exit(0);
 }
 
-updateLocalTranslationBuild();
+updateLocalTranslationBuild(project);
