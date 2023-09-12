@@ -39,7 +39,7 @@ export enum StartPolicy {
 export class FastI18nService {
     private api_key: string | undefined = undefined;
     private project_id: string = '';
-    private update_ttl: number = 60 * 5; //Check the latest online translation every 5 min, and update the local cache if needed
+    private update_ttl: number = 60 * 5; //Check the latest online translation every 5 min, and update the local cache if needed, set -1 to disable this option
     private startup_policy: keyof typeof StartPolicy = 'CACHE';
     // private builded_translations: Object | undefined = undefined;
     private cached_translations: TranslationsConfiguration | undefined = undefined;
@@ -56,6 +56,7 @@ export class FastI18nService {
         if (configuration.project_id) this.project_id = configuration.project_id;
         if (configuration.startup_policy) this.startup_policy = configuration.startup_policy;
         if (configuration.update_ttl) this.update_ttl = configuration.update_ttl;
+        if (this.update_ttl > 0 && this.update_ttl < 60) this.update_ttl = 60;
         return this;
     }
 
@@ -83,7 +84,7 @@ export class FastI18nService {
         /**
          * Start cache synchronisation if the policy is CACHE or ONLINE
          */
-        if (this.startup_policy !== 'BUILD') this.syncCacheTTL();
+        if (this.startup_policy !== 'BUILD' && this.update_ttl > 0) this.syncCacheTTL();
 
         return (this);
     }
@@ -109,6 +110,7 @@ export class FastI18nService {
     }
 
     private syncCacheTTL = () => {
+        console.log('syncCacheTTL')
         setTimeout(() => {
             this.updateLocalCacheFromOnline();
             this.syncCacheTTL();
@@ -142,7 +144,6 @@ export class FastI18nService {
                         .then((response: TranslationsConfigurationResponse) => response.json())
                         .then((response: TranslationsConfiguration) => {
                             this.cached_translations = response;
-                            console.log(this.cached_translations);
                             resolve(this.cached_translations);
                         })
                         .catch((error) => {
