@@ -110,7 +110,6 @@ export class FastI18nService {
     }
 
     private syncCacheTTL = () => {
-        console.log('syncCacheTTL')
         setTimeout(() => {
             this.updateLocalCacheFromOnline();
             this.syncCacheTTL();

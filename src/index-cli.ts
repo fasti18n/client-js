@@ -35,8 +35,6 @@ export const updateLocalTranslationBuild = async (project: string) => {
         update_ttl: 5 * 60,
     });
 
-    console.log(fastI18n);
-
     const cached_configuration = fastI18n.getCachedConfiguration();
 
     if (!cached_configuration) {
