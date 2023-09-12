@@ -1,6 +1,6 @@
 {
   "name": "@fasti18n/client-js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A js module that interacts with the fastI18n service",
   "repository": {
     "type": "git",
