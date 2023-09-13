@@ -94,7 +94,7 @@ export class FastI18nService {
     }
 
     public getTranslations = () => {
-        return this.cached_translations?.translations || {};
+        return this.cached_translations?.translations ?? {};
     }
 
     public getAvailableLang(): Array<string> | undefined {
@@ -106,7 +106,7 @@ export class FastI18nService {
     }
 
     public getFallbackLang(): string | undefined {
-        return this.cached_translations?.source_language || undefined;
+        return this.cached_translations?.source_language ?? undefined;
     }
 
     private syncCacheTTL = () => {
@@ -157,7 +157,7 @@ export class FastI18nService {
         return new Promise((resolve, reject) => {
             (async () => {
                 const requestHeaders: HeadersInit = new Headers();
-                requestHeaders.set('x-api-key', this.api_key || '');
+                requestHeaders.set('x-api-key', this.api_key ?? '');
                 requestHeaders.set('Content-Type', 'application/json');
                 requestHeaders.set('Accept', 'application/json');
 
