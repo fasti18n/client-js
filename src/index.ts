@@ -110,10 +110,12 @@ export class FastI18nService {
     }
 
     private syncCacheTTL = () => {
-        setTimeout(() => {
-            this.updateLocalCacheFromOnline();
-            this.syncCacheTTL();
-        }, this.update_ttl * 1000);
+        if (this.update_ttl > 0) {
+            setTimeout(() => {
+                this.updateLocalCacheFromOnline();
+                this.syncCacheTTL();
+            }, this.update_ttl * 1000);
+        }
     }
 
 
@@ -131,26 +133,22 @@ export class FastI18nService {
     private updateLocalCacheFromOnline = async (): Promise<string | TranslationsConfiguration> => {
         return new Promise((resolve, reject) => {
             (async () => {
-                try {
-                    await fetch(`${this.cdn_domains[0]}/${this.project_id}.json`, {
-                        method: "GET",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                        }
+                await fetch(`${this.cdn_domains[0]}/${this.project_id}.json`, {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    }
+                })
+                    .then((response: any) => response.ok ? response : reject(response.status))
+                    .then((response: TranslationsConfigurationResponse) => response.json())
+                    .then((response: TranslationsConfiguration) => {
+                        this.cached_translations = response;
+                        resolve(this.cached_translations);
                     })
-                        .then((response: any) => response.ok ? response : reject(response.status))
-                        .then((response: TranslationsConfigurationResponse) => response.json())
-                        .then((response: TranslationsConfiguration) => {
-                            this.cached_translations = response;
-                            resolve(this.cached_translations);
-                        })
-                        .catch((error) => {
-                            reject(error);
-                        });
-                } catch (e) {
-                    reject(e);
-                }
+                    .catch((error) => {
+                        reject(error);
+                    });
             })()
         });
     }
@@ -158,32 +156,28 @@ export class FastI18nService {
     public async addKey(key: string, value: string = ''): Promise<string | unknown> {
         return new Promise((resolve, reject) => {
             (async () => {
-                try {
-                    const requestHeaders: HeadersInit = new Headers();
-                    requestHeaders.set('x-api-key', this.api_key || '');
-                    requestHeaders.set('Content-Type', 'application/json');
-                    requestHeaders.set('Accept', 'application/json');
+                const requestHeaders: HeadersInit = new Headers();
+                requestHeaders.set('x-api-key', this.api_key || '');
+                requestHeaders.set('Content-Type', 'application/json');
+                requestHeaders.set('Accept', 'application/json');
 
-                    await fetch(`${this.api_domains[0]}/project/${this.project_id}/key/${key}`, {
-                        method: "POST",
-                        headers: requestHeaders,
-                        body: JSON.stringify({
-                            value,
-                        }),
+                await fetch(`${this.api_domains[0]}/project/${this.project_id}/key/${key}`, {
+                    method: "POST",
+                    headers: requestHeaders,
+                    body: JSON.stringify({
+                        value,
+                    }),
+                })
+                    .then((response: any) => {
+                        if (response.ok) {
+                            resolve(response.content.toJSON());
+                        } else {
+                            reject(response.status)
+                        }
                     })
-                        .then((response: any) => {
-                            if (response.ok) {
-                                resolve(response.content.toJSON());
-                            } else {
-                                reject(response.status)
-                            }
-                        })
-                        .catch((error) => {
-                            reject(error);
-                        });
-                } catch (e) {
-                    reject(e);
-                }
+                    .catch((error) => {
+                        reject(error);
+                    });
             })()
         });
     }
