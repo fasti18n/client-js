@@ -82,7 +82,7 @@ describe('Test fasti18n client js index.ts', () => {
             project_id: 'test1JsonError'
         };
         const fasti18n: FastI18nService = await FastI18nService.create(configuration)
-        fasti18n['cdn_domains'] = ['http://0.0.0.0']
+        fasti18n['cdn_domains'] = ['https://0.0.0.0']
         const error = await fasti18n['updateLocalCacheFromOnline']().catch(e => {
             return e.toString();
         })
