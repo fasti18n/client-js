@@ -125,7 +125,7 @@ export class FastI18nService {
                 this.cached_translations = this.local_builded_translations;
                 resolve(this.cached_translations);
             } else {
-                reject('ErrorLoadFromBuild');
+                reject(new Error('ErrorLoadFromBuild'));
             }
         });
     };
